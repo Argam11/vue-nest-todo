@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
 import { toast } from "vue3-toastify";
 
@@ -9,6 +10,8 @@ import ToastifyComponent from "@/components/ToastifyComponent.vue";
 
 const showPassword = ref(false);
 const loading = ref(false);
+
+const router = useRouter();
 
 const { handleSubmit } = useForm<LoginInput>({
   validationSchema: {
@@ -31,7 +34,13 @@ const password = useField("password");
 const submit = handleSubmit(async (values) => {
   try {
     loading.value = true;
-    await login(values);
+    const { access_token } = await login(values);
+
+    localStorage.setItem("access_token", access_token);
+
+    router.replace("/");
+
+    console.log("access_token", access_token);
   } catch (error) {
     if (error instanceof Error) {
       toast.error(ToastifyComponent, {

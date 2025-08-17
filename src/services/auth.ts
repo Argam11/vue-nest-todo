@@ -1,10 +1,15 @@
 import type { LoginInput } from "@/types/login";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const login = (input: LoginInput) => {
-  console.log("input", input);
-  return new Promise((res, rej) => {
-    setTimeout(() => {
-      rej(new Error("Something went wrong!"));
-    }, 1000);
-  });
+  const url = BASE_URL + "auth/login";
+
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  }).then((res) => res.json());
 };
