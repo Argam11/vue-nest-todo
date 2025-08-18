@@ -34,13 +34,9 @@ const password = useField("password");
 const submit = handleSubmit(async (values) => {
   try {
     loading.value = true;
-    const { access_token } = await login(values);
-
-    localStorage.setItem("access_token", access_token);
+    await login(values);
 
     router.replace("/");
-
-    console.log("access_token", access_token);
   } catch (error) {
     if (error instanceof Error) {
       toast.error(ToastifyComponent, {

@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { Model } from "mongoose";
 import { compare } from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
@@ -10,20 +10,20 @@ import { LoginDto } from "./dto/login-dto";
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async login(loginDto: LoginDto) {
     const user = await this.userModel.findOne({ username: loginDto.username });
 
     if (!user) {
-      throw new ForbiddenException("Credentials incorrect");
+      throw new BadRequestException("Credentials incorrect");
     }
 
     const match = await compare(loginDto.password, user.password);
 
     if (!match) {
-      throw new ForbiddenException("Credentials incorrect");
+      throw new BadRequestException("Credentials incorrect");
     }
 
     const payload = { sub: user._id, username: user.username };

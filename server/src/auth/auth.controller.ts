@@ -1,4 +1,13 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Header,
+  Headers,
+  HttpStatus,
+  Post,
+  Res,
+} from "@nestjs/common";
+import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login-dto";
 
@@ -7,8 +16,21 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("login")
-  login(@Body() loginDto: LoginDto) {
-    console.log("loginDto", loginDto);
-    return this.authService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const access_token = await this.authService.login(loginDto);
+
+    res.cookie("access_token", access_token, {
+      httpOnly: true,
+      path: "/",
+      domain: "localhost",
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Login successful",
+    };
   }
 }
