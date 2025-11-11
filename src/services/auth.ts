@@ -8,3 +8,10 @@ export const login = async (input: LoginInput) => {
     path: "auth/login",
   });
 };
+
+export const me = async () => {
+  return request({
+    method: "GET",
+    path: "auth/me",
+  });
+};

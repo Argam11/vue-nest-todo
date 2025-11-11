@@ -6,7 +6,7 @@ export interface LoginInput {
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS";
 
 export interface RequestInput<T> {
-  input: T;
+  input?: T;
   method: Method;
   path: string;
 }

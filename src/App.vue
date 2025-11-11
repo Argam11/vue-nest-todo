@@ -1,5 +1,18 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
 import { RouterLink, RouterView } from "vue-router";
+import { me } from "@/services/auth";
+import { useUserStore } from "@/stores/user";
+
+const userStore = useUserStore();
+const { username } = storeToRefs(userStore);
+
+onMounted(async () => {
+  const user = await me();
+
+  userStore.setUser(user);
+});
 </script>
 
 <template>
@@ -11,7 +24,9 @@ import { RouterLink, RouterView } from "vue-router";
     <nav>
       <RouterLink to="/companies">Companies</RouterLink>
       <RouterLink to="/employees">Employees</RouterLink>
-      <RouterLink to="/login">Login</RouterLink>
+
+      <RouterLink v-if="username" to="/my-account">{{ username }}</RouterLink>
+      <RouterLink v-else to="/login">Login</RouterLink>
     </nav>
   </header>
 
