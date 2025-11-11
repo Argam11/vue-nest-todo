@@ -5,7 +5,7 @@ import { useField, useForm } from "vee-validate";
 import { toast } from "vue3-toastify";
 
 import { login } from "@/services/auth";
-import type { LoginInput } from "@/types/login";
+import type { LoginInput } from "@/types/auth";
 import ToastifyComponent from "@/components/ToastifyComponent.vue";
 
 const showPassword = ref(false);
