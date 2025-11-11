@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Model } from "mongoose";
 import { compare } from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
@@ -10,7 +11,8 @@ import { LoginDto } from "./dto/login-dto";
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async login(loginDto: LoginDto) {
