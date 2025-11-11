@@ -1,5 +1,13 @@
-import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
-import { Response } from "express";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+} from "@nestjs/common";
+import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login-dto";
 import { LoginPipe } from "./pipes/login.pipe";
@@ -26,5 +34,13 @@ export class AuthController {
       statusCode: HttpStatus.OK,
       message: "Login successful",
     };
+  }
+
+  @Get("me")
+  async me(@Req() req: Request) {
+    const access_token = req.cookies.access_token;
+    const user = await this.authService.me(access_token);
+
+    return user;
   }
 }
