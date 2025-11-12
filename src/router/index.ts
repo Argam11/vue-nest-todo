@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Layout from "@/components/Layout.vue";
+import { useUserStore } from "@/stores/user";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,28 +24,40 @@ const router = createRouter({
           path: "/my-account",
           name: "my-account",
           component: () => import("@/views/MyAccount.vue"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/companies",
           name: "companies",
           component: () => import("@/views/Companies.vue"),
+          meta: {
+            requiresAuth: true,
+          },
         },
         {
           path: "/employees",
           name: "employees",
           component: () => import("@/views/Employees.vue"),
+          meta: {
+            requiresAuth: true,
+          },
         },
       ],
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue'),
-    // },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  const userStore = useUserStore();
+  const requiresAuth = to.meta.requiresAuth;
+
+  if (requiresAuth && !userStore.username) {
+    next({ name: "login" });
+  } else {
+    next();
+  }
 });
 
 export default router;
