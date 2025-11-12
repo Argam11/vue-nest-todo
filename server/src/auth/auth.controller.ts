@@ -6,11 +6,13 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login-dto";
 import { LoginPipe } from "./pipes/login.pipe";
+import { AuthGuard } from "./auth.guard";
 
 @Controller("auth")
 export class AuthController {
@@ -21,7 +23,7 @@ export class AuthController {
     @Body(LoginPipe) loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const access_token = await this.authService.login(loginDto);
+    const { access_token, username } = await this.authService.login(loginDto);
 
     res.cookie("access_token", access_token, {
       httpOnly: true,
@@ -33,14 +35,29 @@ export class AuthController {
     return {
       statusCode: HttpStatus.OK,
       message: "Login successful",
+      username,
     };
   }
 
+  @Post("logout")
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie("access_token", {
+      path: "/",
+      sameSite: "lax",
+      secure: false,
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: "Logout successful",
+    };
+  }
+
+  @UseGuards(AuthGuard)
   @Get("me")
   async me(@Req() req: Request) {
-    const access_token = req.cookies.access_token;
-    const user = await this.authService.me(access_token);
-
-    return user;
+    return {
+      username: req.user.username,
+    };
   }
 }

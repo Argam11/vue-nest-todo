@@ -15,3 +15,10 @@ export const me = async () => {
     path: "auth/me",
   });
 };
+
+export const logout = async () => {
+  return request({
+    method: "POST",
+    path: "auth/logout",
+  });
+};

@@ -7,7 +7,9 @@ import { toast } from "vue3-toastify";
 import { login } from "@/services/auth";
 import type { LoginInput } from "@/types/auth";
 import ToastifyComponent from "@/components/ToastifyComponent.vue";
+import { useUserStore } from "@/stores/user";
 
+const userStore = useUserStore();
 const showPassword = ref(false);
 const loading = ref(false);
 
@@ -34,8 +36,9 @@ const password = useField("password");
 const submit = handleSubmit(async (values) => {
   try {
     loading.value = true;
-    await login(values);
+    const { username } = await login(values);
 
+    userStore.setUser({ username });
     router.replace("/");
   } catch (error) {
     if (error instanceof Error) {
