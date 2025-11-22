@@ -36,12 +36,4 @@ export class AuthService {
       username: user.username,
     };
   }
-
-  async me(access_token: string) {
-    const payload = await this.jwtService.verifyAsync(access_token);
-
-    return {
-      username: payload.username,
-    };
-  }
 }

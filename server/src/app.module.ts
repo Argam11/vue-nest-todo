@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
-import { AuthModule } from "@/auth/auth.module";
 import configuration from "@/config/configuration";
 import { DB_URL } from "@/constants";
+import { AuthModule } from "@/auth/auth.module";
+import { CompaniesModule } from "@/companies/companies.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DB_URL } from "@/constants";
       load: [configuration],
     }),
     AuthModule,
+    CompaniesModule,
   ],
   controllers: [],
   providers: [],

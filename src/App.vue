@@ -1,37 +1,34 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { RouterLink, RouterView } from "vue-router";
-import { me } from "@/services/auth";
 import { useUserStore } from "@/stores/user";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 const userStore = useUserStore();
-const { username } = storeToRefs(userStore);
-
-onMounted(async () => {
-  const user = await me();
-
-  userStore.setUser(user);
-});
+const { username, isLoading } = storeToRefs(userStore);
 </script>
 
 <template>
-  <header>
-    <RouterLink to="/">
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" />
-    </RouterLink>
+  <LoadingSpinner v-if="isLoading" message="Authenticating..." />
 
-    <nav>
-      <RouterLink to="/companies">Companies</RouterLink>
-      <RouterLink to="/employees">Employees</RouterLink>
+  <div v-else>
+    <header>
+      <RouterLink to="/">
+        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" />
+      </RouterLink>
 
-      <RouterLink v-if="username" to="/my-account">{{ username }}</RouterLink>
-      <RouterLink v-else to="/login">Login</RouterLink>
-    </nav>
-  </header>
+      <nav>
+        <RouterLink to="/companies">Companies</RouterLink>
+        <RouterLink to="/employees">Employees</RouterLink>
 
-  <div class="content">
-    <RouterView />
+        <RouterLink v-if="username" to="/my-account">{{ username }}</RouterLink>
+        <RouterLink v-else to="/login">Login</RouterLink>
+      </nav>
+    </header>
+
+    <div class="content">
+      <RouterView />
+    </div>
   </div>
 </template>
 
@@ -44,12 +41,12 @@ header {
   padding: 1rem;
   position: fixed;
   top: 0;
+  z-index: 1;
   width: 100%;
   background-color: #fff;
 }
 
 .content {
-  height: 500dvh;
   margin-top: 100px;
 }
 

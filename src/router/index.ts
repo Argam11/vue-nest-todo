@@ -49,8 +49,14 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const userStore = useUserStore();
+
+  // Wait for authentication initialization
+  if (!userStore.isInitialized) {
+    await userStore.initializeAuth();
+  }
+
   const requiresAuth = to.meta.requiresAuth;
 
   if (requiresAuth && !userStore.username) {

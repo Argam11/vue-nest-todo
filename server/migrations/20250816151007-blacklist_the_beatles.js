@@ -8,8 +8,8 @@ module.exports = {
    */
   async up(db) {
     return (await db.createCollection("users")).insertOne({
-      username: "admin",
-      password: await bcrypt.hash("admin123", 10),
+      username: "Argam",
+      password: await bcrypt.hash("12345678", 10),
     });
   },
 
