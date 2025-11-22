@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
 import { toast } from "vue3-toastify";
@@ -48,12 +48,6 @@ const submit = handleSubmit(async (values) => {
     }
   } finally {
     loading.value = false;
-  }
-});
-
-onMounted(() => {
-  if (userStore.username) {
-    router.replace("/");
   }
 });
 </script>

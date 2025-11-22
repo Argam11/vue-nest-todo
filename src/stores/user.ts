@@ -1,21 +1,25 @@
 import { me } from "@/services/auth";
 import { defineStore } from "pinia";
 
+interface User {
+  username: string;
+}
+
 interface UserState {
-  username: string | null;
+  user: User | null;
   isInitialized: boolean;
   isLoading: boolean;
 }
 
 export const useUserStore = defineStore("user", {
   state: (): UserState => ({
-    username: null,
+    user: null,
     isInitialized: false,
     isLoading: false,
   }),
   actions: {
-    setUser(user: UserState) {
-      this.$patch(user);
+    setUser(user: User | null) {
+      this.user = user;
       this.isInitialized = true;
     },
 
@@ -28,7 +32,7 @@ export const useUserStore = defineStore("user", {
         this.setUser(user);
       } catch {
         // User is not authenticated or token expired
-        this.username = null;
+        this.user = null;
         this.isInitialized = true;
       } finally {
         this.isLoading = false;

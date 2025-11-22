@@ -5,7 +5,7 @@ import { useUserStore } from "@/stores/user";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 const userStore = useUserStore();
-const { username, isLoading } = storeToRefs(userStore);
+const { user, isLoading } = storeToRefs(userStore);
 </script>
 
 <template>
@@ -21,7 +21,7 @@ const { username, isLoading } = storeToRefs(userStore);
         <RouterLink to="/companies">Companies</RouterLink>
         <RouterLink to="/employees">Employees</RouterLink>
 
-        <RouterLink v-if="username" to="/my-account">{{ username }}</RouterLink>
+        <RouterLink v-if="user" to="/my-account">{{ user?.username }}</RouterLink>
         <RouterLink v-else to="/login">Login</RouterLink>
       </nav>
     </header>

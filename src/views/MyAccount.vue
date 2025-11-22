@@ -8,7 +8,7 @@ const userStore = useUserStore();
 
 const handleLogout = async () => {
   await logout();
-  userStore.setUser({ username: null });
+  userStore.setUser(null);
   router.push("/login");
 };
 </script>

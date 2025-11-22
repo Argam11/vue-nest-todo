@@ -59,7 +59,11 @@ router.beforeEach(async (to, _from, next) => {
 
   const requiresAuth = to.meta.requiresAuth;
 
-  if (requiresAuth && !userStore.username) {
+  if (to.name === "login" && userStore.user) {
+    next({ name: "home" });
+  }
+
+  if (requiresAuth && !userStore.user) {
     next({ name: "login" });
   } else {
     next();
