@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 module.exports = {
   /**
@@ -7,9 +8,12 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async up(db) {
+    const username = process.env.DEFAULT_USER_USERNAME;
+    const password = process.env.DEFAULT_USER_PASSWORD;
+
     return (await db.createCollection("users")).insertOne({
-      username: "Argam",
-      password: await bcrypt.hash("12345678", 10),
+      username,
+      password: await bcrypt.hash(password, 10),
     });
   },
 
