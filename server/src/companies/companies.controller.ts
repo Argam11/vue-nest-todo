@@ -30,15 +30,15 @@ export class CompaniesController {
 
   @UseGuards(AuthGuard)
   @Post()
-  @UseInterceptors(FileInterceptor("img"))
+  @UseInterceptors(FileInterceptor("logo"))
   createCompany(
     @Body(ValidationPipe) createCompanyDto: CreateCompanyDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     validateImageFile(file);
 
     return this.companiesService.createCompany(
-      file.filename,
+      file?.filename || null,
       createCompanyDto.name,
       createCompanyDto.email,
       createCompanyDto.website,

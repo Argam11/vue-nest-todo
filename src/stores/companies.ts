@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import { toast } from "vue3-toastify";
 import type { CompaniesState } from "@/types/companies";
-import { getCompanies } from "@/services/companies";
+import { getCompanies, createCompany } from "@/services/companies";
+import type { CreateCompanyInput } from "@/types/companies";
 
 export const useCompaniesStore = defineStore("companies", {
   state: (): CompaniesState => ({
@@ -26,6 +27,23 @@ export const useCompaniesStore = defineStore("companies", {
         this.loading = false;
       }
     },
+
+    async createCompany(input: CreateCompanyInput) {
+      this.error = null;
+
+      try {
+        const newCompany = await createCompany(input);
+
+        // Add new company to the list
+        this.companies.unshift(newCompany);
+
+        return newCompany;
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to create company";
+        this.error = errorMessage;
+        throw error;
+      }
+    },
   },
 });
-

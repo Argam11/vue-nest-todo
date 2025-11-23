@@ -3,18 +3,18 @@ import { HydratedDocument } from "mongoose";
 
 export type CompanyDocument = HydratedDocument<Company>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Company {
-  @Prop()
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop()
-  img: string;
+  @Prop({ type: String })
+  logo: string;
 
-  @Prop()
+  @Prop({ type: String, required: true })
   email: string;
 
-  @Prop()
+  @Prop({ type: String, required: true })
   website: string;
 }
 

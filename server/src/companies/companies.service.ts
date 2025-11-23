@@ -4,7 +4,7 @@ import { ConfigService } from "@nestjs/config";
 import { Model } from "mongoose";
 import * as path from "path";
 import { Company, CompanyDocument } from "./schema/company.schema";
-import { UPLOAD_DIR } from "./companies.constants";
+import { UPLOAD_DIR, DEFAULT_COMPANY_LOGO } from "./companies.constants";
 import { deleteFileIfExists, getImageUrl } from "./companies.utils";
 
 @Injectable()
@@ -20,9 +20,13 @@ export class CompaniesService {
 
   /**
    * Get all companies with absolute image URLs
+   * Sorted by newest first (createdAt descending)
    */
   async getCompanies() {
-    const companies = await this.companyModel.find({}).exec();
+    const companies = await this.companyModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .exec();
 
     return {
       companies: companies.map((company) => ({
@@ -30,22 +34,23 @@ export class CompaniesService {
         name: company.name,
         email: company.email,
         website: company.website,
-        img: getImageUrl(this.appUrl, company.img),
+        logo: getImageUrl(this.appUrl, company.logo),
       })),
     };
   }
 
   /**
    * Create a new company
+   * If no filename is provided, uses default fallback logo
    */
   async createCompany(
-    filename: string,
+    filename: string | null,
     name: string,
     email: string,
     website: string,
   ) {
     const company = await this.companyModel.create({
-      img: filename,
+      logo: filename || DEFAULT_COMPANY_LOGO,
       name,
       email,
       website,
@@ -56,7 +61,7 @@ export class CompaniesService {
       name: company.name,
       email: company.email,
       website: company.website,
-      img: getImageUrl(this.appUrl, company.img),
+      logo: getImageUrl(this.appUrl, company.logo),
     };
   }
 
@@ -71,18 +76,18 @@ export class CompaniesService {
     }
 
     // Delete old image file
-    const oldImagePath = path.join(UPLOAD_DIR, company.img);
+    const oldImagePath = path.join(UPLOAD_DIR, company.logo);
     deleteFileIfExists(oldImagePath);
 
     // Update company
     company.name = name;
-    company.img = filename;
+    company.logo = filename;
     await company.save();
 
     return {
       _id: company._id,
       name: company.name,
-      img: getImageUrl(this.appUrl, company.img),
+      logo: getImageUrl(this.appUrl, company.logo),
     };
   }
 
@@ -97,7 +102,7 @@ export class CompaniesService {
     }
 
     // Delete image file
-    const imagePath = path.join(UPLOAD_DIR, company.img);
+    const imagePath = path.join(UPLOAD_DIR, company.logo);
     deleteFileIfExists(imagePath);
 
     // Delete company from database

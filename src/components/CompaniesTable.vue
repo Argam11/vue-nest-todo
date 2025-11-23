@@ -7,9 +7,9 @@
     no-data-text="No companies found"
     class="elevation-1"
   >
-    <template v-slot:[`item.img`]="{ item }">
+    <template v-slot:[`item.logo`]="{ item }">
       <v-avatar size="48" class="my-2" rounded="lg">
-        <v-img :src="item.img" :alt="item.name" cover />
+        <v-img :src="item.logo" :alt="item.name" cover />
       </v-avatar>
     </template>
 
@@ -66,7 +66,7 @@ interface Props {
 defineProps<Props>();
 
 const headers = [
-  { title: "Logo", value: "img", sortable: false },
+  { title: "Logo", value: "logo", sortable: false },
   { title: "Name", value: "name", sortable: true },
   { title: "Email", value: "email", sortable: true },
   { title: "Website", value: "website", sortable: true },

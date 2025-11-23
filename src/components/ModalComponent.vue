@@ -10,6 +10,8 @@ interface Props {
   showOkButton?: boolean;
   showCancelButton?: boolean;
   persistent?: boolean;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -20,6 +22,8 @@ const props = withDefaults(defineProps<Props>(), {
   showOkButton: true,
   showCancelButton: true,
   persistent: false,
+  loading: false,
+  disabled: false,
 });
 
 const emit = defineEmits<{
@@ -86,6 +90,7 @@ const handleClose = () => {
           v-if="showCancelButton"
           variant="text"
           class="px-4 text-none"
+          :disabled="loading"
           @click="handleCancel"
         >
           {{ cancelText }}
@@ -95,6 +100,8 @@ const handleClose = () => {
           color="primary"
           variant="elevated"
           class="px-4 text-none"
+          :loading="loading"
+          :disabled="disabled || loading"
           @click="handleOk"
         >
           {{ okText }}

@@ -31,10 +31,12 @@ export function deleteFileIfExists(filepath: string): void {
 
 /**
  * Validate uploaded image file type and size
+ * File is optional - only validates if file is provided
  */
-export function validateImageFile(file: Express.Multer.File): void {
+export function validateImageFile(file?: Express.Multer.File): void {
+  // File is optional, so only validate if provided
   if (!file) {
-    throw new BadRequestException("Image file is required");
+    return;
   }
 
   if (!ALLOWED_IMAGE_TYPES.includes(file.mimetype)) {

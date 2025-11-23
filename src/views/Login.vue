@@ -2,12 +2,14 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useField, useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import { toast } from "vue3-toastify";
 
 import { login } from "@/services/auth";
 import type { LoginInput } from "@/types/auth";
 import ToastifyComponent from "@/components/ToastifyComponent.vue";
 import { useUserStore } from "@/stores/user";
+import { loginSchema } from "@/schemas";
 
 const userStore = useUserStore();
 const showPassword = ref(false);
@@ -16,17 +18,10 @@ const loading = ref(false);
 const router = useRouter();
 
 const { handleSubmit } = useForm<LoginInput>({
-  validationSchema: {
-    username(value: string) {
-      if (value?.length >= 2) return true;
-
-      return "Username needs to be at least 2 characters.";
-    },
-    password(value: string) {
-      if (value?.length >= 8) return true;
-
-      return "Password needs to be at least 8 characters.";
-    },
+  validationSchema: toTypedSchema(loginSchema),
+  initialValues: {
+    username: "",
+    password: "",
   },
 });
 

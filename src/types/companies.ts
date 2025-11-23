@@ -1,7 +1,7 @@
 export interface Company {
   _id: string;
   name: string;
-  img: string; // Full URL from backend
+  logo: string; // Full URL from backend
   email: string;
   website: string;
 }
@@ -12,3 +12,9 @@ export interface CompaniesState {
   error: string | null;
 }
 
+export interface CreateCompanyInput {
+  name: string;
+  email: string;
+  website: string;
+  logo: File | null;
+}

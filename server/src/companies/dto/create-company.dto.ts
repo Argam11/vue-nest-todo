@@ -1,15 +1,18 @@
-import { IsEmail, IsNotEmpty, IsString, IsUrl } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches } from "class-validator";
+import { URL_PATTERN } from "@/constants";
 
 export class CreateCompanyDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
+  @IsEmail()
   email: string;
 
-  @IsUrl()
+  @IsString()
   @IsNotEmpty()
+  @Matches(URL_PATTERN, { message: "Invalid website URL" })
   website: string;
 }

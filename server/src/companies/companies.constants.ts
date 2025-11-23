@@ -11,3 +11,6 @@ export const ALLOWED_IMAGE_TYPES = [
   "image/webp",
 ];
 
+// Fallback logo for companies without uploaded logo
+export const DEFAULT_COMPANY_LOGO = "default-company-logo.png";
+
