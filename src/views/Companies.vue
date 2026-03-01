@@ -1,5 +1,6 @@
 <template>
-  <v-container>
+  <ErrorComponent v-if="error" />
+  <v-container v-else>
     <v-row>
       <v-col cols="8">
         <h1 class="text-h4">Companies</h1>
@@ -12,7 +13,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <CompaniesTable :companies="store.companies" :loading="store.loading" />
+        <CompaniesTable :companies="companies" />
       </v-col>
     </v-row>
   </v-container>
@@ -33,13 +34,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
+import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 import { useCompaniesStore } from "@/stores/companies";
 import CompaniesTable from "@/components/CompaniesTable.vue";
 import ModalComponent from "@/components/ModalComponent.vue";
 import CreateCompanyForm from "@/components/CreateCompanyForm.vue";
 import type { CreateCompanyInput } from "@/types/companies";
+import ErrorComponent from "@/components/Error.vue";
+
+const companyStore = useCompaniesStore();
+const { companies, error } = storeToRefs(companyStore);
 
 const showModal = ref(false);
 const isSubmitting = ref(false);
@@ -53,7 +59,7 @@ const handleFormSubmit = async (data: CreateCompanyInput) => {
   isSubmitting.value = true;
 
   try {
-    await store.createCompany({
+    await companyStore.createCompany({
       name: data.name,
       email: data.email,
       website: data.website,
@@ -85,10 +91,4 @@ const handleCancel = () => {
   showModal.value = false;
   formRef.value?.resetForm();
 };
-
-const store = useCompaniesStore();
-
-onMounted(() => {
-  store.fetchCompanies();
-});
 </script>

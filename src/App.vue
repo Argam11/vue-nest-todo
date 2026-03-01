@@ -1,15 +1,5 @@
-<script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { RouterLink, RouterView } from "vue-router";
-import { useUserStore } from "@/stores/user";
-import LoadingSpinner from "@/components/LoadingSpinner.vue";
-
-const userStore = useUserStore();
-const { user, isLoading } = storeToRefs(userStore);
-</script>
-
 <template>
-  <LoadingSpinner v-if="isLoading" message="Authenticating..." />
+  <LoadingSpinner v-if="isLoading" message="Loading..." />
 
   <div v-else>
     <header>
@@ -21,7 +11,9 @@ const { user, isLoading } = storeToRefs(userStore);
         <RouterLink to="/companies">Companies</RouterLink>
         <RouterLink to="/employees">Employees</RouterLink>
 
-        <RouterLink v-if="user" to="/my-account">{{ user?.username }}</RouterLink>
+        <RouterLink v-if="user" to="/my-account">{{
+          user?.username
+        }}</RouterLink>
         <RouterLink v-else to="/login">Login</RouterLink>
       </nav>
     </header>
@@ -31,6 +23,20 @@ const { user, isLoading } = storeToRefs(userStore);
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { RouterLink, RouterView } from "vue-router";
+import { useUserStore } from "@/stores/user";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import { useGlobalStore } from "@/stores/global";
+
+const userStore = useUserStore();
+const globalStore = useGlobalStore();
+
+const { isLoading } = storeToRefs(globalStore);
+const { user } = storeToRefs(userStore);
+</script>
 
 <style scoped>
 header {

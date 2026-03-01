@@ -1,3 +1,39 @@
+<template>
+  <div class="login-form">
+    <h1>Login</h1>
+    <v-form @submit.prevent="submit">
+      <v-text-field
+        class="my-6"
+        variant="outlined"
+        v-model="username"
+        :error-messages="errors.username"
+        label="Username"
+      />
+      <v-text-field
+        class="my-6"
+        variant="outlined"
+        v-model="password"
+        :error-messages="errors.password"
+        label="Password"
+        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        :type="showPassword ? 'text' : 'password'"
+        @click:append-inner="showPassword = !showPassword"
+      />
+      <v-btn class="mt-2" type="submit" block :disabled="isSubmitting">
+        <template #prepend>
+          <v-progress-circular
+            v-if="isSubmitting"
+            indeterminate
+            size="20"
+            width="2"
+          ></v-progress-circular>
+        </template>
+        {{ isSubmitting ? "Loading..." : "Submit" }}</v-btn
+      >
+    </v-form>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -6,18 +42,16 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { toast } from "vue3-toastify";
 
 import { login } from "@/services/auth";
-import type { LoginInput } from "@/types/auth";
 import ToastifyComponent from "@/components/ToastifyComponent.vue";
 import { useUserStore } from "@/stores/user";
 import { loginSchema } from "@/schemas";
 
 const userStore = useUserStore();
 const showPassword = ref(false);
-const loading = ref(false);
 
 const router = useRouter();
 
-const { handleSubmit } = useForm<LoginInput>({
+const { handleSubmit, errors, isSubmitting } = useForm({
   validationSchema: toTypedSchema(loginSchema),
   initialValues: {
     username: "",
@@ -25,12 +59,11 @@ const { handleSubmit } = useForm<LoginInput>({
   },
 });
 
-const username = useField("username");
-const password = useField("password");
+const { value: username } = useField<string>("username");
+const { value: password } = useField<string>("password");
 
 const submit = handleSubmit(async (values) => {
   try {
-    loading.value = true;
     const { username } = await login(values);
 
     userStore.setUser({ username });
@@ -41,39 +74,9 @@ const submit = handleSubmit(async (values) => {
         data: { message: error.message },
       });
     }
-  } finally {
-    loading.value = false;
   }
 });
 </script>
-
-<template>
-  <div class="login-form">
-    <h1>Login</h1>
-    <v-form @submit.prevent="submit">
-      <v-text-field
-        class="my-6"
-        variant="outlined"
-        v-model="username.value.value"
-        :error-messages="username.errorMessage.value"
-        label="Username"
-      />
-      <v-text-field
-        class="my-6"
-        variant="outlined"
-        v-model="password.value.value"
-        :error-messages="password.errorMessage.value"
-        label="Password"
-        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-        :type="showPassword ? 'text' : 'password'"
-        @click:append-inner="showPassword = !showPassword"
-      />
-      <v-btn class="mt-2" type="submit" block>{{
-        loading ? "Loading..." : "Submit"
-      }}</v-btn>
-    </v-form>
-  </div>
-</template>
 
 <style scoped lang="scss">
 .login-form {

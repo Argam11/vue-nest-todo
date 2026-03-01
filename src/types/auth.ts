@@ -1,12 +1,7 @@
-export interface LoginInput {
-  username: string;
-  password: string;
-}
+export type TMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS";
 
-export type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS";
-
-export interface RequestInput<T> {
+export interface IRequestInput<T> {
   input?: T;
-  method: Method;
+  method: TMethod;
   path: string;
 }

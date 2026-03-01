@@ -44,6 +44,38 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## API Documentation
+
+This project includes Swagger/OpenAPI documentation for all API endpoints. Once the server is running, you can access the interactive API documentation at:
+
+```
+http://localhost:3000/api
+```
+
+Or simply run:
+
+```bash
+npm run swagger
+# or
+yarn swagger
+# or
+pnpm swagger
+```
+
+This command will automatically open the Swagger UI in your default browser.
+
+The Swagger UI provides:
+- Complete API endpoint documentation
+- Request/response schemas
+- Interactive testing interface
+- Authentication support (cookie-based auth)
+
+### Auth Endpoints
+
+- `POST /auth/login` - User login (returns access token in cookie)
+- `POST /auth/logout` - User logout (clears access token cookie)
+- `GET /auth/me` - Get current user information (requires authentication)
+
 ## Run tests
 
 ```bash

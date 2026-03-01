@@ -1,8 +1,12 @@
-import type { RequestInput } from "@/types/auth";
+import type { IRequestInput } from "@/types/auth";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-export const request = async <T>({ input, method, path }: RequestInput<T>) => {
+export const request = async <T, U>({
+  input,
+  method,
+  path,
+}: IRequestInput<T>): Promise<U> => {
   const url = BASE_URL + path;
 
   const res = await fetch(url, {

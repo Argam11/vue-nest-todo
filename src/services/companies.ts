@@ -7,12 +7,21 @@ interface GetCompaniesResponse {
 }
 
 export const getCompanies = async (): Promise<Company[]> => {
-  const response = await request<GetCompaniesResponse>({
+  const response = await request<void, GetCompaniesResponse>({
     method: "GET",
     path: "companies",
   });
 
   return response.companies;
+};
+
+export const getCompany = async (id: string): Promise<Company> => {
+  const response = await request<void, Company>({
+    method: "GET",
+    path: `companies/${id}`,
+  });
+
+  return response;
 };
 
 export const createCompany = async (

@@ -1,3 +1,90 @@
+<template>
+  <v-form @submit.prevent="onSubmit">
+    <v-container>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            v-model="name"
+            label="Company Name"
+            placeholder="Enter company name"
+            variant="outlined"
+            :error-messages="errors.name"
+            required
+          />
+        </v-col>
+
+        <v-col cols="12">
+          <v-text-field
+            v-model="email"
+            label="Email"
+            placeholder="company@example.com"
+            variant="outlined"
+            type="email"
+            :error-messages="errors.email"
+            required
+          />
+        </v-col>
+
+        <v-col cols="12">
+          <v-text-field
+            v-model="website"
+            label="Website"
+            placeholder="https://example.com"
+            variant="outlined"
+            type="url"
+            :error-messages="errors.website"
+            required
+          />
+        </v-col>
+
+        <v-col cols="12">
+          <div class="d-flex align-start flex-column ga-4">
+            <input
+              ref="fileInput"
+              type="file"
+              :accept="acceptedTypes"
+              @change="handleNativeFileChange"
+              style="display: none"
+            />
+            <v-btn color="primary" @click="fileInput?.click()" size="large">
+              <v-icon>mdi-upload</v-icon>
+              Upload Logo
+            </v-btn>
+
+            <v-chip
+              v-if="logo"
+              class="pa-3"
+              closable
+              @click:close="clearFile"
+              size="small"
+            >
+              {{ logo.name }}
+              [{{ formatFileSize(logo.size) }}]
+            </v-chip>
+          </div>
+          <div v-if="logoError" class="text-error text-caption mt-1">
+            {{ logoError }}
+          </div>
+        </v-col>
+
+        <v-col v-if="previewUrl" cols="12">
+          <div class="preview-container">
+            <p class="text-subtitle-2 mb-2">Logo Preview:</p>
+            <v-img
+              :src="previewUrl"
+              max-width="200"
+              max-height="200"
+              width="200"
+              class="preview-image"
+            />
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+    <button type="submit" style="display: none" aria-hidden="true"></button>
+  </v-form>
+</template>
+
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useForm, useField } from "vee-validate";
@@ -115,93 +202,6 @@ watch(
   },
 );
 </script>
-
-<template>
-  <v-form @submit.prevent="onSubmit">
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            v-model="name"
-            label="Company Name"
-            placeholder="Enter company name"
-            variant="outlined"
-            :error-messages="errors.name"
-            required
-          />
-        </v-col>
-
-        <v-col cols="12">
-          <v-text-field
-            v-model="email"
-            label="Email"
-            placeholder="company@example.com"
-            variant="outlined"
-            type="email"
-            :error-messages="errors.email"
-            required
-          />
-        </v-col>
-
-        <v-col cols="12">
-          <v-text-field
-            v-model="website"
-            label="Website"
-            placeholder="https://example.com"
-            variant="outlined"
-            type="url"
-            :error-messages="errors.website"
-            required
-          />
-        </v-col>
-
-        <v-col cols="12">
-          <div class="d-flex align-start flex-column ga-4">
-            <input
-              ref="fileInput"
-              type="file"
-              :accept="acceptedTypes"
-              @change="handleNativeFileChange"
-              style="display: none"
-            />
-            <v-btn color="primary" @click="fileInput?.click()" size="large">
-              <v-icon>mdi-upload</v-icon>
-              Upload Logo
-            </v-btn>
-
-            <v-chip
-              v-if="logo"
-              class="pa-3"
-              closable
-              @click:close="clearFile"
-              size="small"
-            >
-              {{ logo.name }}
-              [{{ formatFileSize(logo.size) }}]
-            </v-chip>
-          </div>
-          <div v-if="logoError" class="text-error text-caption mt-1">
-            {{ logoError }}
-          </div>
-        </v-col>
-
-        <v-col v-if="previewUrl" cols="12">
-          <div class="preview-container">
-            <p class="text-subtitle-2 mb-2">Logo Preview:</p>
-            <v-img
-              :src="previewUrl"
-              max-width="200"
-              max-height="200"
-              width="200"
-              class="preview-image"
-            />
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-    <button type="submit" style="display: none" aria-hidden="true"></button>
-  </v-form>
-</template>
 
 <style scoped>
 .preview-container {

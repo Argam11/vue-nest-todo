@@ -8,8 +8,8 @@ export interface Company {
 
 export interface CompaniesState {
   companies: Company[];
-  loading: boolean;
-  error: string | null;
+  company: Company | null;
+  error: boolean;
 }
 
 export interface CreateCompanyInput {

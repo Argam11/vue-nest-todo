@@ -2,15 +2,22 @@
   <v-data-table
     :headers="headers"
     :items="companies"
-    :loading="loading"
     loading-text="Loading companies..."
     no-data-text="No companies found"
     class="elevation-1"
   >
     <template v-slot:[`item.logo`]="{ item }">
-      <v-avatar size="48" class="my-2" rounded="lg">
-        <v-img :src="item.logo" :alt="item.name" cover />
-      </v-avatar>
+      <router-link :to="`/companies/${item._id}`" class="text-decoration-none">
+        <v-avatar size="48" class="my-2" rounded="lg">
+          <v-img :src="item.logo" :alt="item.name" cover />
+        </v-avatar>
+      </router-link>
+    </template>
+
+    <template v-slot:[`item.name`]="{ item }">
+      <router-link :to="`/companies/${item._id}`">
+        {{ item.name }}
+      </router-link>
     </template>
 
     <template v-slot:[`item.email`]="{ item }">
@@ -60,7 +67,6 @@ import type { Company } from "@/types/companies";
 
 interface Props {
   companies: Company[];
-  loading: boolean;
 }
 
 defineProps<Props>();
@@ -70,7 +76,12 @@ const headers = [
   { title: "Name", value: "name", sortable: true },
   { title: "Email", value: "email", sortable: true },
   { title: "Website", value: "website", sortable: true },
-  { title: "Actions", value: "actions", sortable: false, align: "end" as const },
+  {
+    title: "Actions",
+    value: "actions",
+    sortable: false,
+    align: "end" as const,
+  },
 ];
 </script>
 
@@ -78,5 +89,8 @@ const headers = [
 .v-data-table {
   border-radius: 8px;
 }
-</style>
 
+.text-decoration-none {
+  background-color: unset;
+}
+</style>

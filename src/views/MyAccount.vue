@@ -1,3 +1,8 @@
+<template>
+  <h1>My Account</h1>
+  <v-btn class="mt-4" @click="handleLogout">Logout</v-btn>
+</template>
+
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { logout } from "@/services/auth";
@@ -12,8 +17,3 @@ const handleLogout = async () => {
   router.push("/login");
 };
 </script>
-
-<template>
-  <h1>My Account</h1>
-  <v-btn class="mt-4" @click="handleLogout">Logout</v-btn>
-</template>

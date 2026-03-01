@@ -1,8 +1,16 @@
-import type { LoginInput } from "@/types/auth";
+import type { TLoginInput } from "@/schemas";
 import { request } from "./request";
 
-export const login = async (input: LoginInput) => {
-  return request<LoginInput>({
+interface ILoginResponse {
+  username: string;
+}
+
+interface IMeResponse {
+  username: string;
+}
+
+export const login = async (input: TLoginInput): Promise<ILoginResponse> => {
+  return request<TLoginInput, ILoginResponse>({
     input,
     method: "POST",
     path: "auth/login",
@@ -10,7 +18,7 @@ export const login = async (input: LoginInput) => {
 };
 
 export const me = async () => {
-  return request({
+  return request<void, IMeResponse>({
     method: "GET",
     path: "auth/me",
   });

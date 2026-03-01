@@ -40,6 +40,25 @@ export class CompaniesService {
   }
 
   /**
+   * Get a company by ID
+   */
+  async getCompany(id: string) {
+    const company = await this.companyModel.findById(id).exec();
+
+    if (!company) {
+      throw new NotFoundException(`Company with ID ${id} not found`);
+    }
+
+    return {
+      _id: company._id,
+      name: company.name,
+      email: company.email,
+      website: company.website,
+      logo: getImageUrl(this.appUrl, company.logo),
+    };
+  }
+
+  /**
    * Create a new company
    * If no filename is provided, uses default fallback logo
    */
