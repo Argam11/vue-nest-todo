@@ -1,5 +1,9 @@
 import { request, requestWithFormData } from "@/services/request";
-import type { Company, CreateCompanyInput, UpdateCompanyInput } from "@/types/companies";
+import type {
+  Company,
+  CreateCompanyInput,
+  UpdateCompanyInput,
+} from "@/types/companies";
 
 interface GetCompaniesResponse {
   companies: Company[];
@@ -47,4 +51,11 @@ export const updateCompany = async (
     },
     "PUT",
   );
+};
+
+export const deleteCompany = async (id: string): Promise<void> => {
+  await request<void, void>({
+    path: `companies/${id}`,
+    method: "DELETE",
+  });
 };

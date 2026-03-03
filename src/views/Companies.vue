@@ -22,6 +22,16 @@
     </v-row>
   </v-container>
 
+  <ConfirmDialog
+    v-model="showDeleteConfirm"
+    title="Delete Company"
+    :message="`Are you sure you want to delete &quot;${deletingCompany?.name}&quot;? This action cannot be undone.`"
+    confirm-text="Delete"
+    :loading="isDeleting"
+    @confirm="confirmDelete"
+    @cancel="cancelDelete"
+  />
+
   <ModalComponent
     v-model="showModal"
     :title="modalTitle"
@@ -48,6 +58,7 @@ import { toast } from "vue3-toastify";
 import { useCompaniesStore } from "@/stores/companies";
 import CompaniesTable from "@/components/CompaniesTable.vue";
 import ModalComponent from "@/components/ModalComponent.vue";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import CreateCompanyForm from "@/components/CreateCompanyForm.vue";
 import type { Company, CreateCompanyInput } from "@/types/companies";
 import ErrorComponent from "@/components/Error.vue";
@@ -59,9 +70,14 @@ const showModal = ref(false);
 const isSubmitting = ref(false);
 const formRef = ref<InstanceType<typeof CreateCompanyForm> | null>(null);
 const editingCompany = ref<Company | null>(null);
+const deletingCompany = ref<Company | null>(null);
+const showDeleteConfirm = ref(false);
+const isDeleting = ref(false);
 
 const isEditing = computed(() => !!editingCompany.value);
-const modalTitle = computed(() => (isEditing.value ? "Edit Company" : "Add Company"));
+const modalTitle = computed(() =>
+  isEditing.value ? "Edit Company" : "Add Company",
+);
 
 const addCompany = () => {
   editingCompany.value = null;
@@ -131,6 +147,36 @@ const handleEdit = (id: string) => {
 };
 
 const handleDelete = (id: string) => {
-  console.log(id);
+  const company = companies.value.find((c) => c._id === id);
+  if (!company) return;
+
+  deletingCompany.value = company;
+  showDeleteConfirm.value = true;
+};
+
+const confirmDelete = async () => {
+  if (!deletingCompany.value) return;
+
+  isDeleting.value = true;
+  try {
+    await companyStore.deleteCompany(deletingCompany.value._id);
+    toast.success("Company deleted successfully!", {
+      position: "top-right",
+    });
+    showDeleteConfirm.value = false;
+    deletingCompany.value = null;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to delete company";
+    toast.error(errorMessage, {
+      position: "top-right",
+    });
+  } finally {
+    isDeleting.value = false;
+  }
+};
+
+const cancelDelete = () => {
+  deletingCompany.value = null;
 };
 </script>
