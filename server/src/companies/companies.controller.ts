@@ -136,7 +136,7 @@ export class CompaniesController {
   }
 
   @Put(":id")
-  @UseInterceptors(FileInterceptor("img"))
+  @UseInterceptors(FileInterceptor("logo"))
   @ApiOperation({ summary: "Update an existing company" })
   @ApiParam({ name: "id", description: "Company ID" })
   @ApiConsumes("multipart/form-data")
@@ -144,12 +144,12 @@ export class CompaniesController {
     description: "Updated company data",
     schema: {
       type: "object",
-      required: ["name", "img"],
+      required: ["name", "email", "website"],
       properties: {
         name: { type: "string", example: "Acme Corp Updated" },
         email: { type: "string", example: "new@acme.com" },
         website: { type: "string", example: "https://acme.com" },
-        img: { type: "string", format: "binary" },
+        logo: { type: "string", format: "binary" },
       },
     },
   })
@@ -177,10 +177,13 @@ export class CompaniesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     validateImageFile(file);
+
     return this.companiesService.updateCompany(
       id,
       updateCompanyDto.name,
-      file.filename,
+      updateCompanyDto.email,
+      updateCompanyDto.website,
+      file?.filename,
     );
   }
 

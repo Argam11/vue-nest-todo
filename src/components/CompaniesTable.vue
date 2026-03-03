@@ -40,23 +40,23 @@
       <span v-else class="text-grey">—</span>
     </template>
 
-    <template v-slot:[`item.actions`]>
+    <template v-slot:[`item.actions`]="{ item }">
       <v-btn
         color="primary"
         icon="mdi-pencil"
         size="small"
         variant="text"
-        disabled
         class="mr-2"
-        title="Edit (Coming Soon)"
+        title="Edit"
+        @click="emit('edit', item._id)"
       />
       <v-btn
         color="error"
         icon="mdi-delete"
         size="small"
         variant="text"
-        disabled
-        title="Delete (Coming Soon)"
+        title="Delete"
+        @click="emit('delete', item._id)"
       />
     </template>
   </v-data-table>
@@ -70,6 +70,11 @@ interface Props {
 }
 
 defineProps<Props>();
+
+const emit = defineEmits<{
+  (event: "edit", id: string): void;
+  (event: "delete", id: string): void;
+}>();
 
 const headers = [
   { title: "Logo", value: "logo", sortable: false },

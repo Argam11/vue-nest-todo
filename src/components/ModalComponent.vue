@@ -135,6 +135,7 @@ const handleClose = () => {
 .modal-content {
   padding: 24px;
   min-height: 100px;
+  overflow-y: auto;
 }
 
 .modal-footer {

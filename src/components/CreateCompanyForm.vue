@@ -81,12 +81,11 @@
         </v-col>
       </v-row>
     </v-container>
-    <button type="submit" style="display: none" aria-hidden="true"></button>
   </v-form>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useForm, useField } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { validateFile, getAcceptedFileTypes } from "@/utils/validation";
@@ -96,14 +95,16 @@ import {
   revokeFilePreviewUrl,
 } from "@/utils/fileHelpers";
 import { createCompanySchema, type CreateCompanySchema } from "@/schemas";
+import type { Company } from "@/types/companies";
 
 const props = defineProps<{
   onSubmit: (data: CreateCompanySchema & { logo: File | null }) => void;
+  company?: Company | null;
 }>();
 
 const validationSchema = toTypedSchema(createCompanySchema);
 
-const { handleSubmit, resetForm, errors } = useForm({
+const { handleSubmit, resetForm, setValues, errors } = useForm({
   validationSchema,
   initialValues: {
     name: "",
@@ -182,25 +183,40 @@ const resetFormData = () => {
   logo.value = null;
   logoError.value = null;
 
-  if (previewUrl.value) {
+  if (previewUrl.value && !previewUrl.value.startsWith("http")) {
     revokeFilePreviewUrl(previewUrl.value);
-    previewUrl.value = null;
   }
+  previewUrl.value = null;
 };
 
-defineExpose({
-  submitForm: onSubmit,
-  resetForm: resetFormData,
+onMounted(() => {
+  if (props.company) {
+    setValues({
+      name: props.company.name,
+      email: props.company.email,
+      website: props.company.website,
+    });
+
+    if (props.company.logo) {
+      previewUrl.value = props.company.logo;
+      logo.value = new File([], props.company.logo, { type: "image/jpeg" });
+    }
+  }
 });
 
 watch(
   () => previewUrl.value,
   (newUrl, oldUrl) => {
-    if (oldUrl && oldUrl !== newUrl) {
+    if (oldUrl && oldUrl !== newUrl && !oldUrl.startsWith("http")) {
       revokeFilePreviewUrl(oldUrl);
     }
   },
 );
+
+defineExpose({
+  submitForm: onSubmit,
+  resetForm: resetFormData,
+});
 </script>
 
 <style scoped>
@@ -213,5 +229,6 @@ watch(
 .preview-image {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
+  margin-bottom: 10px;
 }
 </style>

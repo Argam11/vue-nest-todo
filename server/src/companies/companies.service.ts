@@ -63,13 +63,13 @@ export class CompaniesService {
    * If no filename is provided, uses default fallback logo
    */
   async createCompany(
-    filename: string | null,
+    logo: string,
     name: string,
     email: string,
     website: string,
   ) {
     const company = await this.companyModel.create({
-      logo: filename || DEFAULT_COMPANY_LOGO,
+      logo: logo || DEFAULT_COMPANY_LOGO,
       name,
       email,
       website,
@@ -87,26 +87,41 @@ export class CompaniesService {
   /**
    * Update an existing company
    */
-  async updateCompany(id: string, name: string, filename: string) {
+  async updateCompany(
+    id: string,
+    name: string,
+    email: string,
+    website: string,
+    logo?: string,
+  ) {
     const company = await this.companyModel.findById(id).exec();
 
     if (!company) {
       throw new NotFoundException(`Company with ID ${id} not found`);
     }
 
-    // Delete old image file
-    const oldImagePath = path.join(UPLOAD_DIR, company.logo);
-    deleteFileIfExists(oldImagePath);
+    const updateData: Record<string, string> = { name, email, website };
 
-    // Update company
-    company.name = name;
-    company.logo = filename;
-    await company.save();
+    if (logo) {
+      if (company.logo && company.logo !== DEFAULT_COMPANY_LOGO) {
+        const oldImagePath = path.join(UPLOAD_DIR, company.logo);
+        deleteFileIfExists(oldImagePath);
+      }
+      updateData.logo = logo;
+    }
+
+    const updatedCompany = await this.companyModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true },
+    );
 
     return {
-      _id: company._id,
-      name: company.name,
-      logo: getImageUrl(this.appUrl, company.logo),
+      _id: updatedCompany._id,
+      name: updatedCompany.name,
+      email: updatedCompany.email,
+      website: updatedCompany.website,
+      logo: getImageUrl(this.appUrl, updatedCompany.logo),
     };
   }
 

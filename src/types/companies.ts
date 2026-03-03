@@ -18,3 +18,7 @@ export interface CreateCompanyInput {
   website: string;
   logo: File | null;
 }
+
+export interface UpdateCompanyInput extends CreateCompanyInput {
+  id: string;
+}

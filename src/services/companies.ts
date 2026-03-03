@@ -1,6 +1,5 @@
 import { request, requestWithFormData } from "@/services/request";
-import type { Company } from "@/types/companies";
-import type { CreateCompanyInput } from "@/types/companies";
+import type { Company, CreateCompanyInput, UpdateCompanyInput } from "@/types/companies";
 
 interface GetCompaniesResponse {
   companies: Company[];
@@ -33,4 +32,19 @@ export const createCompany = async (
     website: input.website,
     logo: input.logo,
   });
+};
+
+export const updateCompany = async (
+  input: UpdateCompanyInput,
+): Promise<Company> => {
+  return requestWithFormData<Company>(
+    `companies/${input.id}`,
+    {
+      name: input.name,
+      email: input.email,
+      website: input.website,
+      logo: input.logo,
+    },
+    "PUT",
+  );
 };
