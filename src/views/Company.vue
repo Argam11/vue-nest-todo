@@ -39,8 +39,6 @@ const { company } = storeToRefs(companyStore);
 const goBack = () => {
   router.back();
 };
-
-console.log("company", company);
 </script>
 
 <style scoped>

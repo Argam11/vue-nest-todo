@@ -1,3 +1,59 @@
+<template>
+  <v-dialog
+    v-model="dialogModel"
+    :persistent="persistent"
+    :attach="attachProp"
+    max-width="600"
+  >
+    <v-card>
+      <v-card-title class="modal-header">
+        <span class="modal-title">{{ title }}</span>
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          class="close-button"
+          @click="handleClose"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-card-title>
+
+      <v-divider />
+
+      <v-card-text class="modal-content">
+        <slot />
+      </v-card-text>
+
+      <v-divider />
+
+      <v-card-actions class="modal-footer">
+        <v-spacer />
+        <v-btn
+          v-if="showCancelButton"
+          variant="text"
+          class="px-4 text-none"
+          :disabled="loading"
+          @click="handleCancel"
+        >
+          {{ cancelText }}
+        </v-btn>
+        <v-btn
+          v-if="showOkButton"
+          color="primary"
+          variant="elevated"
+          class="px-4 text-none"
+          :loading="loading"
+          :disabled="disabled || loading"
+          @click="handleOk"
+        >
+          {{ okText }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
 <script setup lang="ts">
 import { computed } from "vue";
 
@@ -54,62 +110,6 @@ const handleClose = () => {
   emit("cancel");
 };
 </script>
-
-<template>
-  <v-dialog
-    v-model="dialogModel"
-    :persistent="persistent"
-    :attach="attachProp"
-    max-width="600"
-  >
-    <v-card>
-      <v-card-title class="modal-header">
-        <span class="modal-title">{{ title }}</span>
-        <v-btn
-          icon
-          size="small"
-          variant="text"
-          class="close-button"
-          @click="handleClose"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
-
-      <v-divider />
-
-      <v-card-text class="modal-content">
-        <slot />
-      </v-card-text>
-
-      <v-divider />
-
-      <v-card-actions class="modal-footer">
-        <v-spacer />
-        <v-btn
-          v-if="showCancelButton"
-          variant="text"
-          class="px-4 text-none"
-          :disabled="loading"
-          @click="handleCancel"
-        >
-          {{ cancelText }}
-        </v-btn>
-        <v-btn
-          v-if="showOkButton"
-          color="primary"
-          variant="elevated"
-          class="px-4 text-none"
-          :loading="loading"
-          :disabled="disabled || loading"
-          @click="handleOk"
-        >
-          {{ okText }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-</template>
 
 <style scoped>
 .modal-header {

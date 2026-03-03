@@ -1,6 +1,13 @@
+<template>
+  <div>
+    <span :class="titleClassName" class="toast-title">{{ title }}: </span>
+    <span :class="subTitleClassName">{{ subTitle }}</span>
+  </div>
+</template>
+
 <script setup lang="ts">
+import { type PropType, ref, computed, type Ref } from "vue";
 import { type ToastOptions } from "vue3-toastify";
-import { type PropType, defineProps, ref, computed, type Ref } from "vue";
 
 const props = defineProps({
   closeToast: Function as PropType<(e?: MouseEvent) => void>,
@@ -23,13 +30,6 @@ const subTitleClassName = computed(() => {
     : "Toastify__toast__error-sub-title-text";
 });
 </script>
-
-<template>
-  <div>
-    <span :class="titleClassName" class="toast-title">{{ title }}: </span>
-    <span :class="subTitleClassName">{{ subTitle }}</span>
-  </div>
-</template>
 
 <style scoped lang="scss">
 .toast-title {

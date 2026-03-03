@@ -1,3 +1,12 @@
+<template>
+  <div :class="['loading-container', { fullscreen: fullscreen }]">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>{{ message }}</p>
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 interface Props {
   message?: string;
@@ -5,19 +14,10 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  message: 'Loading...',
+  message: "Loading...",
   fullscreen: true,
 });
 </script>
-
-<template>
-  <div :class="['loading-container', { 'fullscreen': fullscreen }]">
-    <div class="loading-spinner">
-      <div class="spinner"></div>
-      <p>{{ message }}</p>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .loading-container {
@@ -52,8 +52,12 @@ withDefaults(defineProps<Props>(), {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-spinner p {
