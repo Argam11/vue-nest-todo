@@ -108,6 +108,8 @@ export class CompaniesService {
         deleteFileIfExists(oldImagePath);
       }
       updateData.logo = logo;
+    } else {
+      updateData.logo = DEFAULT_COMPANY_LOGO;
     }
 
     const updatedCompany = await this.companyModel.findByIdAndUpdate(
@@ -137,11 +139,13 @@ export class CompaniesService {
     }
 
     // Delete image file
-    const imagePath = path.join(UPLOAD_DIR, company.logo);
-    deleteFileIfExists(imagePath);
+    if (company.logo && company.logo !== DEFAULT_COMPANY_LOGO) {
+      const imagePath = path.join(UPLOAD_DIR, company.logo);
+      deleteFileIfExists(imagePath);
+    }
 
     // Delete company from database
-    await this.companyModel.findByIdAndDelete(id).exec();
+    await this.companyModel.findByIdAndDelete(new Types.ObjectId(id));
 
     return {
       message: "Company deleted successfully",
