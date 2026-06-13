@@ -28,6 +28,10 @@ export const validateFile = (file: File | null | undefined): string | null => {
     return `File size exceeds maximum allowed size of ${MAX_FILE_SIZE / (1024 * 1024)}MB`;
   }
 
+  if (file.size === 0) {
+    return "File is empty";
+  }
+
   return null;
 };
 

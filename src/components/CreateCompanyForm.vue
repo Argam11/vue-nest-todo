@@ -198,8 +198,17 @@ onMounted(() => {
     });
 
     if (props.company.logo) {
-      previewUrl.value = props.company.logo;
-      logo.value = new File([], props.company.logo, { type: "image/jpeg" });
+      const fileName = props.company.logo;
+      previewUrl.value = fileName;
+
+      fetch(props.company.logo)
+        .then((res) => res.blob())
+        .then((blob) => {
+          logo.value = new File([blob], fileName, { type: "image/jpeg" });
+        })
+        .catch((err) => {
+          console.error("Error fetching logo", err);
+        });
     }
   }
 });
