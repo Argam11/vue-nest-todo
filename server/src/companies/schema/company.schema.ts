@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
+import { ICompanyEntity } from "../types";
 
 export type CompanyDocument = HydratedDocument<Company>;
 
 @Schema({ timestamps: true })
-export class Company {
+export class Company implements ICompanyEntity<Types.ObjectId> {
   @Prop({ type: String, required: true })
   name: string;
 

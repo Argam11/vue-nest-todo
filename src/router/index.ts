@@ -3,6 +3,7 @@ import Layout from "@/components/Layout.vue";
 import { useUserStore } from "@/stores/user";
 import { useCompaniesStore } from "@/stores/companies";
 import { useGlobalStore } from "@/stores/global";
+import { getCompany } from "@/services/companies";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,11 +54,17 @@ const router = createRouter({
             const companyStore = useCompaniesStore();
             const globalStore = useGlobalStore();
 
-            globalStore.setLoading(true);
-            await companyStore.fetchCompany(to.params.id as string);
-            globalStore.setLoading(false);
-
-            next();
+            try {
+              globalStore.setLoading(true);
+              const { company } = await getCompany(to.params.id as string);
+              companyStore.setCompany(company);
+            } catch {
+              globalStore.setLoading(false);
+              next("/not-found");
+            } finally {
+              globalStore.setLoading(false);
+              next();
+            }
           },
         },
         {

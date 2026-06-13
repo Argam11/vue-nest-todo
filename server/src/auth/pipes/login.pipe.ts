@@ -1,9 +1,9 @@
 import { PipeTransform, Injectable } from "@nestjs/common";
-import { LoginDto } from "../dto/login-dto";
+import { ILoginRequest } from "../types";
 
 @Injectable()
 export class LoginPipe implements PipeTransform {
-  transform(value: LoginDto) {
+  transform(value: ILoginRequest) {
     return value;
   }
 }

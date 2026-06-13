@@ -18,8 +18,8 @@ export const getCompanies = async (): Promise<Company[]> => {
   return response.companies;
 };
 
-export const getCompany = async (id: string): Promise<Company> => {
-  const response = await request<void, Company>({
+export const getCompany = async (id: string): Promise<{ company: Company }> => {
+  const response = await request<void, { company: Company }>({
     method: "GET",
     path: `companies/${id}`,
   });
@@ -29,8 +29,8 @@ export const getCompany = async (id: string): Promise<Company> => {
 
 export const createCompany = async (
   input: CreateCompanyInput,
-): Promise<Company> => {
-  return requestWithFormData<Company>("companies", {
+): Promise<{ company: Company }> => {
+  return requestWithFormData<{ company: Company }>("companies", {
     name: input.name,
     email: input.email,
     website: input.website,
@@ -40,8 +40,8 @@ export const createCompany = async (
 
 export const updateCompany = async (
   input: UpdateCompanyInput,
-): Promise<Company> => {
-  return requestWithFormData<Company>(
+): Promise<{ company: Company }> => {
+  return requestWithFormData<{ company: Company }>(
     `companies/${input.id}`,
     {
       name: input.name,

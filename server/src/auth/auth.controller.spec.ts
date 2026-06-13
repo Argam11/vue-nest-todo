@@ -5,13 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { User, UserSchema } from "./schemas/user.schema";
-import { LoginDto } from "./dto/login-dto";
-import { ForbiddenException } from "@nestjs/common";
-import {
-  createTestModule,
-  clearTestDatabase,
-  createTestUser,
-} from "../../test-setup";
+import { createTestModule, clearTestDatabase } from "../../test-setup";
 
 describe("AuthController", () => {
   let authController: AuthController;

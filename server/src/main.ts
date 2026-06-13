@@ -1,10 +1,11 @@
-import { NestFactory } from "@nestjs/core";
+import { NestFactory, Reflector } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as cookieParser from "cookie-parser";
 import { join } from "path";
 import { AppModule } from "./app.module";
+import { ClassSerializerInterceptor } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -19,6 +20,13 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      strategy: 'excludeAll',
+      excludeExtraneousValues: true,
+    }),
+  );
 
   // Serve static files from the assets directory
   app.useStaticAssets(join(__dirname, "..", "..", "assets"), {

@@ -4,8 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
 import { AuthService } from "./auth.service";
 import { User, UserSchema } from "./schemas/user.schema";
-import { LoginDto } from "./dto/login-dto";
-import { ForbiddenException } from "@nestjs/common";
+import { LoginRequestDto } from "./dto/login.dto";
 import {
   createTestModule,
   clearTestDatabase,
@@ -110,7 +109,7 @@ describe("AuthService", () => {
         password: "password2",
       });
 
-      const loginDto1: LoginDto = { username: "user1", password: "password1" };
+      const loginDto1: LoginRequestDto = { username: "user1", password: "password1" };
       // const loginDto2: LoginDto c= { username: "user2", password: "password2" };
 
       const result1 = await authService.login(loginDto1);

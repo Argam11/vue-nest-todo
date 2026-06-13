@@ -1,20 +1,24 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
+import { IUserEntity } from "../types";
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema()
-export class User {
-  @Prop()
+export class User implements IUserEntity<Types.ObjectId> {
+  @Prop({ type: Types.ObjectId, required: true })
+  _id: Types.ObjectId;
+
+  @Prop({ required: true })
   username: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
-  @Prop()
+  @Prop({ required: true })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ required: true })
   updatedAt: Date;
 }
 

@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import * as path from "path";
 import { Company, CompanyDocument } from "./schema/company.schema";
 import { UPLOAD_DIR, DEFAULT_COMPANY_LOGO } from "./companies.constants";
 import { deleteFileIfExists, getImageUrl } from "./companies.utils";
+import { ICompanyEntity } from "./types";
 
 @Injectable()
 export class CompaniesService {
@@ -22,38 +23,36 @@ export class CompaniesService {
    * Get all companies with absolute image URLs
    * Sorted by newest first (createdAt descending)
    */
-  async getCompanies() {
+  async getCompanies(): Promise<ICompanyEntity[]> {
     const companies = await this.companyModel
       .find({})
       .sort({ createdAt: -1 })
+      .lean()
       .exec();
 
-    return {
-      companies: companies.map((company) => ({
-        _id: company._id,
-        name: company.name,
-        email: company.email,
-        website: company.website,
-        logo: getImageUrl(this.appUrl, company.logo),
-      })),
-    };
+    return companies.map((company) => ({
+      ...company,
+      _id: company._id.toString(),
+      logo: getImageUrl(this.appUrl, company.logo),
+    }));
   }
 
   /**
    * Get a company by ID
    */
-  async getCompany(id: string) {
-    const company = await this.companyModel.findById(id).exec();
+  async getCompany(id: string): Promise<ICompanyEntity> {
+    const company = await this.companyModel
+      .findById(new Types.ObjectId(id))
+      .lean()
+      .exec();
 
     if (!company) {
       throw new NotFoundException(`Company with ID ${id} not found`);
     }
 
     return {
-      _id: company._id,
-      name: company.name,
-      email: company.email,
-      website: company.website,
+      ...company,
+      _id: company._id.toString(),
       logo: getImageUrl(this.appUrl, company.logo),
     };
   }
@@ -67,7 +66,7 @@ export class CompaniesService {
     name: string,
     email: string,
     website: string,
-  ) {
+  ): Promise<ICompanyEntity> {
     const company = await this.companyModel.create({
       logo: logo || DEFAULT_COMPANY_LOGO,
       name,
@@ -76,10 +75,8 @@ export class CompaniesService {
     });
 
     return {
-      _id: company._id,
-      name: company.name,
-      email: company.email,
-      website: company.website,
+      ...company.toObject(),
+      _id: company._id.toString(),
       logo: getImageUrl(this.appUrl, company.logo),
     };
   }
@@ -93,8 +90,11 @@ export class CompaniesService {
     email: string,
     website: string,
     logo?: string,
-  ) {
-    const company = await this.companyModel.findById(id).exec();
+  ): Promise<ICompanyEntity> {
+    const company = await this.companyModel
+      .findById(new Types.ObjectId(id))
+      .lean()
+      .exec();
 
     if (!company) {
       throw new NotFoundException(`Company with ID ${id} not found`);
@@ -117,10 +117,8 @@ export class CompaniesService {
     );
 
     return {
-      _id: updatedCompany._id,
-      name: updatedCompany.name,
-      email: updatedCompany.email,
-      website: updatedCompany.website,
+      ...updatedCompany.toObject(),
+      _id: updatedCompany._id.toString(),
       logo: getImageUrl(this.appUrl, updatedCompany.logo),
     };
   }
@@ -128,8 +126,11 @@ export class CompaniesService {
   /**
    * Delete a company
    */
-  async deleteCompany(id: string) {
-    const company = await this.companyModel.findById(id).exec();
+  async deleteCompany(id: string): Promise<{ message: string }> {
+    const company = await this.companyModel
+      .findById(new Types.ObjectId(id))
+      .lean()
+      .exec();
 
     if (!company) {
       throw new NotFoundException(`Company with ID ${id} not found`);

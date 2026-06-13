@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
 import type {
   CompaniesState,
+  Company,
   CreateCompanyInput,
   UpdateCompanyInput,
 } from "@/types/companies";
 import {
   getCompanies,
-  getCompany,
   createCompany,
   updateCompany,
   deleteCompany,
@@ -29,21 +29,20 @@ export const useCompaniesStore = defineStore("companies", {
       }
     },
 
-    async fetchCompany(id: string) {
-      const company = await getCompany(id);
+    setCompany(company: Company) {
       this.company = company;
     },
 
     async createCompany(input: CreateCompanyInput) {
-      const newCompany = await createCompany(input);
-      this.companies.unshift(newCompany);
+      const { company } = await createCompany(input);
+      this.companies.unshift(company);
     },
 
     async updateCompany(input: UpdateCompanyInput) {
-      const updated = await updateCompany(input);
+      const { company } = await updateCompany(input);
       const index = this.companies.findIndex((c) => c._id === input.id);
       if (index !== -1) {
-        this.companies[index] = updated;
+        this.companies[index] = company;
       }
     },
 
