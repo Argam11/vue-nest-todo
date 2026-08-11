@@ -7,16 +7,16 @@ import { Company, CompanyDocument } from "./schema/company.schema";
 import { UPLOAD_DIR, DEFAULT_COMPANY_LOGO } from "./companies.constants";
 import { deleteFileIfExists, getImageUrl } from "./companies.utils";
 import { ICompanyEntity } from "./types";
-
+import { IEnvConfig } from "src/types";
 @Injectable()
 export class CompaniesService {
   private readonly appUrl: string;
 
   constructor(
     @InjectModel(Company.name) private companyModel: Model<CompanyDocument>,
-    private configService: ConfigService,
+    private configService: ConfigService<IEnvConfig, true>,
   ) {
-    this.appUrl = this.configService.get<string>("APP_URL");
+    this.appUrl = this.configService.get("APP_URL");
   }
 
   /**
@@ -62,7 +62,7 @@ export class CompaniesService {
    * If no filename is provided, uses default fallback logo
    */
   async createCompany(
-    logo: string,
+    logo: string | null,
     name: string,
     email: string,
     website: string,
@@ -117,6 +117,10 @@ export class CompaniesService {
       updateData,
       { new: true },
     );
+
+    if (!updatedCompany) {
+      throw new NotFoundException(`Company with ID ${id} not found`);
+    }
 
     return {
       ...updatedCompany.toObject(),
