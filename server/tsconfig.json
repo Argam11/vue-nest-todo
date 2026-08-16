@@ -12,6 +12,7 @@
     "baseUrl": "./",
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "paths": {
       "@/*": ["./src/*"]

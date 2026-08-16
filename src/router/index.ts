@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Layout from "@/components/Layout.vue";
 import { useUserStore } from "@/stores/user";
 import { useCompaniesStore } from "@/stores/companies";
+import { useEmployeesStore } from "@/stores/employees";
 import { useGlobalStore } from "@/stores/global";
 import { getCompany } from "@/services/companies";
 
@@ -72,6 +73,16 @@ const router = createRouter({
           name: "employees",
           component: () => import("@/views/Employees.vue"),
           meta: { requiresAuth: true },
+          beforeEnter: async (_to, _from, next) => {
+            const employeesStore = useEmployeesStore();
+            const globalStore = useGlobalStore();
+
+            globalStore.setLoading(true);
+            await employeesStore.fetchEmployees();
+            globalStore.setLoading(false);
+
+            next();
+          },
         },
         {
           path: "/error",

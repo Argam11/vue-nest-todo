@@ -5,6 +5,7 @@ import configuration from "@/config/configuration";
 import { DB_URL } from "@/constants";
 import { AuthModule } from "@/auth/auth.module";
 import { CompaniesModule } from "@/companies/companies.module";
+import { EmployeesModule } from "@/employees/employees.module";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CompaniesModule } from "@/companies/companies.module";
     }),
     AuthModule,
     CompaniesModule,
+    EmployeesModule,
   ],
   controllers: [],
   providers: [],

@@ -2,15 +2,16 @@ import { NestFactory, Reflector } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import * as cookieParser from "cookie-parser";
+import cookieParser from 'cookie-parser';
 import { join } from "path";
 import { AppModule } from "./app.module";
 import { ClassSerializerInterceptor } from "@nestjs/common";
+import { IEnvConfig } from "./types";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>("port");
+  const configService = app.get(ConfigService<IEnvConfig, true>);
+  const port = configService.get("PORT");
 
   app.enableCors({
     origin: ["http://localhost:5173", "http://localhost:5174"],

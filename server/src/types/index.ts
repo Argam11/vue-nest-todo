@@ -11,4 +11,5 @@ export interface IBaseResponse {
 
 export interface IEnvConfig {
   APP_URL: string;
+  PORT: number;
 }

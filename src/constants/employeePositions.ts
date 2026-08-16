@@ -1,0 +1,23 @@
+// Mock list of IT profession positions used to populate the employee position dropdown
+export const EMPLOYEE_POSITIONS = [
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
+  "Mobile Developer",
+  "DevOps Engineer",
+  "QA Engineer",
+  "Software Architect",
+  "Data Engineer",
+  "Data Scientist",
+  "Machine Learning Engineer",
+  "UI/UX Designer",
+  "Product Manager",
+  "Project Manager",
+  "Scrum Master",
+  "Systems Administrator",
+  "Database Administrator",
+  "Security Engineer",
+  "Technical Support Engineer",
+  "Site Reliability Engineer",
+  "Business Analyst",
+];
